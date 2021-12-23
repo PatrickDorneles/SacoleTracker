@@ -11,6 +11,7 @@ export default function HomeScreen() {
             height={"100%"}
             backgroundColor={"#283593"}
         >
+            YOURE AT HOME
 
         </Flex>
     )

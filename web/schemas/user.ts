@@ -9,7 +9,7 @@ export function createUserSchema({
   _id,
   username,
   admin,
-}: UserSchema | (User & { _id: string })) {
+}: UserSchema | (User & { _id: any })) {
   return {
     _id,
     admin,

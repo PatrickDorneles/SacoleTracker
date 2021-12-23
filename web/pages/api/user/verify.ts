@@ -1,13 +1,26 @@
+import { UserModel } from "./../../../database/schemas/user";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { decode } from "jsonwebtoken";
+import { connectToDatabase } from "../../../database";
+import { createUserSchema } from "../../../schemas/user";
 
-type Data = {
-  name: string;
-};
-
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
-  res.status(200).json({ name: "John Doe" });
+  connectToDatabase();
+
+  const token = req.headers.authorization ?? "";
+
+  const payload = decode(token);
+
+  if (typeof payload !== "object" || !payload) {
+    return res.json(undefined);
+  }
+
+  const { id } = payload as { id: string };
+  const user = await UserModel.findById(id);
+
+  return res.json(createUserSchema(user!));
 }

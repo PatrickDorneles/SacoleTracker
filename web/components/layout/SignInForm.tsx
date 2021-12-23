@@ -1,27 +1,22 @@
 import { Box, Button, Flex, FormControl, FormLabel, Input, InputGroup, InputRightElement, useToast } from "@chakra-ui/react";
 import { Field, Form, Formik, useFormik } from "formik";
 import { useState } from "react";
+import { useUser } from "../../contexts/user";
 
 export function SignInForm() {
     const toast = useToast()
+    const { login } = useUser()
     const { submitForm, values, handleChange } = useFormik({
         initialValues: {
             username: '',
             password: ''
         },
         onSubmit: async (value) => {
-            const response = await fetch(
-                '/api/signin',
-                {
-                    method: 'POST',
-                    body: JSON.stringify(value)
-                }
-            )
+            const result = await login(value.username, value.password)
 
-            if(response.status !== 200) {
-                const data = await response.text()
+            if(!result.success) {
                 toast({
-                    description: data,
+                    description: result?.error,
                     status: "error",
                     isClosable: true,
                     variant: "left-accent",
@@ -31,9 +26,14 @@ export function SignInForm() {
                 return
             }
 
-            const { token } = await response.json()
-
-            localStorage.setItem('auth', token)
+            toast({
+                description: "Login feito com sucesso",
+                status: "success",
+                isClosable: true,
+                variant: "left-accent",
+                position: "top-right",
+                title: "Sucesso"
+            })
         }
     })
 
