@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { compare, hash } from "bcrypt";
 import { sign } from "jsonwebtoken";
-import { UserModel } from "./../../database/schemas/user";
+import { UserModel } from "./../../database/models/index";
 import { connectToDatabase } from "../../database";
 
 const JWTSECRET = process.env.JWTSECRET!;

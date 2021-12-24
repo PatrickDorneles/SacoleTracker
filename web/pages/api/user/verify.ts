@@ -1,7 +1,6 @@
-import { UserModel } from "./../../../database/schemas/user";
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { decode } from "jsonwebtoken";
+import { UserModel } from "./../../../database/models/index";
 import { connectToDatabase } from "../../../database";
 import { createUserSchema } from "../../../schemas/user";
 

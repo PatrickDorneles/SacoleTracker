@@ -1,15 +1,11 @@
-import { User } from "./../database/schemas/user";
+import { User } from "../database/models/user";
 export type UserSchema = {
   _id: string;
   username: string;
   admin: boolean;
 };
 
-export function createUserSchema({
-  _id,
-  username,
-  admin,
-}: UserSchema | (User & { _id: any })) {
+export function createUserSchema({ _id, username, admin }: UserSchema | User) {
   return {
     _id,
     admin,

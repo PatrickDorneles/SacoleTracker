@@ -1,5 +1,5 @@
 import { useRouter } from "next/dist/client/router";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 import { UserSchema } from "../schemas/user";
 
@@ -14,13 +14,26 @@ const UserContext = createContext({} as {
 
 
 const UserProvider: React.FC = ({ children }) => {
-    const { data, mutate } = useSWR<UserSchema | undefined>('/api/user/verify', async (url) => {
+    const { data: user, mutate } = useSWR<UserSchema | undefined>('/api/user/verify', async (url) => {
         const headers = new Headers()
         headers.append("authorization", localStorage.getItem('auth') ?? '')
 
         return fetch(url, { headers }).then(res => res.json())
     })
-    const { push } = useRouter()
+    const { push, pathname } = useRouter()
+
+    useEffect(() => {
+        if(!user && pathname !== '/' && !pathname.startsWith('/public')) {
+            push('/')
+        }
+    }, [user, push, pathname])
+
+
+    useEffect(() => {
+        if(user && !pathname.startsWith('/home')) {
+            push('/home')
+        }
+    }, [user, push, pathname])
 
     async function login(username: string, password: string) {
         const response = await fetch(
@@ -54,7 +67,7 @@ const UserProvider: React.FC = ({ children }) => {
 
     return (
         <UserContext.Provider value={{
-            user: data,
+            user,
             login,
             logout
         }}>

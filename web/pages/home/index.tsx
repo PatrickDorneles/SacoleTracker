@@ -1,18 +1,16 @@
+import Head from 'next/head'
 import { Flex } from "@chakra-ui/react";
+import { CoreContainer } from '../../components/core/CoreContainer';
 
 export default function HomeScreen() {
 
-
     return (
-        <Flex
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            height={"100%"}
-            backgroundColor={"#283593"}
-        >
+        <CoreContainer>
+            <Head>
+                <title>🍦 - Home</title>
+            </Head>
             YOURE AT HOME
 
-        </Flex>
+        </CoreContainer>
     )
 }
