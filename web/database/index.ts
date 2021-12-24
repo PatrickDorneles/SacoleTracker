@@ -1,9 +1,10 @@
-import { hash, hashSync } from "bcrypt";
+import { NODE_ENV } from "../config/Env";
 import mongoose from "mongoose";
+import { MONGOURI } from "../config/Env";
 
 export async function connectToDatabase() {
-  const mongoUri = process.env.DATABASEURI ?? "";
-  mongoose.connect(mongoUri, {
-    dbName: "test",
+  const databaseName = NODE_ENV;
+  mongoose.connect(MONGOURI, {
+    dbName: databaseName,
   });
 }

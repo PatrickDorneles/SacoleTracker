@@ -1,7 +1,7 @@
-import { Transaction } from "./transaction";
-import { Product } from "./product";
-import { Team } from "./team";
-import { User } from "./user";
+import { Transaction } from "./TransactionModel";
+import { Product } from "./ProductModel";
+import { Team } from "./TeamModel";
+import { User } from "./UserModel";
 import { getModelForClass } from "@typegoose/typegoose";
 
 export const UserModel = getModelForClass(User);

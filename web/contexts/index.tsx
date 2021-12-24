@@ -1,4 +1,4 @@
-import { useUser } from "./user"
+import { useUser } from "./UserContext"
 
 export const GlobalContextProvider: React.FC = ({ children }) => {
     const { UserProvider } = useUser()

@@ -1,7 +1,9 @@
 import { useRouter } from "next/dist/client/router";
 import { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
-import { UserSchema } from "../schemas/user";
+import { AUTH_TOKEN_KEY } from "../config/Constants";
+import { signInRequest, verifyUserRequest } from "../functions/requests/UserRequests";
+import { UserSchema } from "../schemas/UserSchema";
 
 const UserContext = createContext({} as {
     user?: UserSchema,
@@ -14,11 +16,9 @@ const UserContext = createContext({} as {
 
 
 const UserProvider: React.FC = ({ children }) => {
-    const { data: user, mutate } = useSWR<UserSchema | undefined>('/api/user/verify', async (url) => {
-        const headers = new Headers()
-        headers.append("authorization", localStorage.getItem('auth') ?? '')
-
-        return fetch(url, { headers }).then(res => res.json())
+    const { data: user, mutate } = useSWR<UserSchema | undefined>('/user/verify', async (url) => {
+        const token = localStorage?.getItem(AUTH_TOKEN_KEY) ?? ""
+        return await verifyUserRequest(url, token)
     })
     const { push, pathname } = useRouter()
 
@@ -36,20 +36,13 @@ const UserProvider: React.FC = ({ children }) => {
     }, [user, push, pathname])
 
     async function login(username: string, password: string) {
-        const response = await fetch(
-            '/api/signin',
-            {
-                method: 'POST',
-                body: JSON.stringify({ username, password })
-            }
-        )
-
-        if(response.status !== 200) {
-            const error = await response.text()
-            return { success: false, error }
+        const result = await signInRequest(username, password)
+        
+        if(!result.success) {
+            return result
         }
-
-        const { token } = await response.json()
+    
+        const { token } = result.data
 
         localStorage.setItem('auth', token)
         await mutate()
