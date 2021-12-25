@@ -1,18 +1,18 @@
-import { RequestResult } from "../../schemas/RequestResultSchema";
+import { RequestResult } from "../../schemas/RequestResultSchema"
 
 export function createRequestResult<T>(
-  success: boolean,
-  result: {
-    data?: T;
-    error?: string;
-  }
+	success: boolean,
+	result: {
+		data?: T
+		error?: string
+	}
 ): RequestResult<T> {
-  if (!success) {
-    return { success, error: result.error! };
-  }
+	if (!success) {
+		return { success, error: result.error! }
+	}
 
-  return {
-    success,
-    data: result.data!,
-  };
+	return {
+		success,
+		data: result.data!
+	}
 }

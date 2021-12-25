@@ -1,5 +1,5 @@
-import validator from "validator";
+import validator from "validator"
 
 export function getValidator() {
-  return validator;
+	return validator
 }

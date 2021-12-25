@@ -1,9 +1,10 @@
-import { useRouter } from "next/dist/client/router";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { createContext, useContext, useEffect } from "react";
 import useSWR from "swr";
+
 import { AUTH_TOKEN_KEY } from "../config/Constants";
 import { signInRequest, verifyUserRequest } from "../functions/requests/UserRequests";
-import { UserSchema, UserSchemaWithTeam } from "../schemas/UserSchema";
+import { UserSchemaWithTeam } from "../schemas/UserSchema";
 
 const UserContext = createContext({} as {
     user?: UserSchemaWithTeam,

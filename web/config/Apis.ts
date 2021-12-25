@@ -1,10 +1,11 @@
-import { IMGBBURL } from "./Constants";
-import axios from "axios";
+import axios from "axios"
+
+import { IMGBBURL } from "./Constants"
 
 export const api = axios.create({
-  baseURL: "/api",
-});
+	baseURL: "/api"
+})
 
 export const imgBBApi = axios.create({
-  baseURL: IMGBBURL,
-});
+	baseURL: IMGBBURL
+})

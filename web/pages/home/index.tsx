@@ -1,16 +1,14 @@
-import Head from 'next/head'
-import { CoreContainer } from '../../components/core/CoreContainer';
-import { CreateTeamForm } from '../../components/layout/CreateTeamForm';
-import { useUser } from '../../contexts/UserContext';
+import Head from "next/head"
+
+import { CoreContainer } from "../../components/core/CoreContainer"
 
 export default function HomeScreen() {
-    const {} = useUser()
-    return (
-        <CoreContainer>
-            <Head>
-                <title>🍦 - Home</title>
-            </Head>
+	return (
+		<CoreContainer>
+			<Head>
+				<title>🍦 - Home</title>
+			</Head>
 
-        </CoreContainer>
-    )
+		</CoreContainer>
+	)
 }

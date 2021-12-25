@@ -1,6 +1,7 @@
-import { Button, Container, Divider, Flex, FormControl, FormLabel, Input, Text, useToast } from "@chakra-ui/react";
-import { Formik, useFormik } from "formik";
+import { Button, Container, Divider, Flex, FormControl, Input, Text, useToast } from "@chakra-ui/react";
+import { useFormik } from "formik";
 import { useRouter } from "next/router";
+
 import { createTeamRequest } from "../../functions/requests/TeamRequests";
 
 export function CreateTeamForm() {

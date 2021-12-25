@@ -1,12 +1,12 @@
-import { TeamSchema } from "./TeamSchema";
+import { TeamSchema } from "./TeamSchema"
 
 export type UserSchema = {
-  _id: string;
-  username: string;
-  admin: boolean;
-  avataUrl?: string;
-};
+	_id: string
+	username: string
+	admin: boolean
+	avataUrl?: string
+}
 
 export type UserSchemaWithTeam = UserSchema & {
-  team: TeamSchema;
-};
+	team: TeamSchema
+}

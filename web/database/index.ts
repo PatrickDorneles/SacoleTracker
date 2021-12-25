@@ -1,18 +1,18 @@
-import { NODE_ENV } from "../config/Env";
-import mongoose from "mongoose";
-import { MONGOURI } from "../config/Env";
+import mongoose from "mongoose"
 
-let isDatabaseConnected = false;
+import { NODE_ENV, MONGOURI } from "../config/Env"
+
+let isDatabaseConnected = false
 
 export async function connectToDatabase() {
-  if (isDatabaseConnected) {
-    return;
-  }
+	if (isDatabaseConnected) {
+		return
+	}
 
-  const databaseName = NODE_ENV;
-  mongoose.connect(MONGOURI, {
-    dbName: databaseName,
-  });
+	const databaseName = NODE_ENV
+	mongoose.connect(MONGOURI, {
+		dbName: databaseName
+	})
 
-  isDatabaseConnected = true;
+	isDatabaseConnected = true
 }
