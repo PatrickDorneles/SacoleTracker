@@ -1,13 +1,18 @@
-import { Button, Container, Divider, Flex, FormControl, Input, Text, useToast } from "@chakra-ui/react";
+import { Button, Container, Divider, Flex, FormControl, FormErrorMessage, Input, Text, useToast } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
+import { useLoading } from "../../contexts/LoadingContext";
 import { createTeamRequest } from "../../functions/requests/TeamRequests";
+import { validateNewTeam } from "../../functions/validation/TeamValidator";
 
 export function CreateTeamForm() {
     const { push } = useRouter()
     const toast = useToast()
-    const { submitForm, values, handleChange } = useFormik({
+    const { loading, startLoading, stopLoading } = useLoading()
+
+    const { submitForm, values, handleChange, setFieldError, errors } = useFormik({
         initialValues: {
             name: '',
             adminUsername: '',
@@ -15,10 +20,32 @@ export function CreateTeamForm() {
             adminRepeatPassword: ''
         },
         onSubmit: async (values) => {
+            startLoading()
+
+            if (values.adminPassword !== values.adminRepeatPassword) {
+                setFieldError('adminPassword', "Senhas do administrador não coincidem")
+                setFieldError('adminRepeatPassword', "Senhas do administrador não coincidem")
+                stopLoading()
+                return
+            }
+
+            const validationResult = validateNewTeam({
+                name: values.name,
+                admin: { username: values.adminUsername, password: values.adminPassword }
+            })
+
+            if(!validationResult.valid) {
+                setFieldError(validationResult.error.field, validationResult.error.message)
+                stopLoading()
+                return
+            }
+
             const result = await createTeamRequest(values.name, {
                 username: values.adminUsername,
                 password: values.adminPassword
             })
+
+            stopLoading()
 
             if(!result.success) {
                 toast({
@@ -46,12 +73,13 @@ export function CreateTeamForm() {
 
 
 
+
     return (
         <Container
             backgroundColor={"white"}
             borderRadius={10}
             padding={8}
-            width={400}
+            width={350}
         >
             <Flex 
                 as="form"
@@ -72,14 +100,16 @@ export function CreateTeamForm() {
                 > 
                     Seu Time
                 </Text>
-                <FormControl id="name">
+                <FormControl id="name" isInvalid={!!errors.name}>
                     <Input
                         variant={"outline"} 
                         color={"#283593"}
                         value={values.name} 
                         name="name"
                         placeholder="Nome do Time"
-                        onChange={handleChange} />
+                        onChange={handleChange}
+                        disabled={loading} />
+                    <FormErrorMessage>{errors.name}</FormErrorMessage>
                 </FormControl>
                 
                 <Divider 
@@ -97,16 +127,18 @@ export function CreateTeamForm() {
                 > 
                     Seu Administrador
                 </Text>
-                <FormControl id="adminUsername">
+                <FormControl id="adminUsername" isInvalid={!!errors.adminUsername}>
                     <Input
                         variant={"outline"} 
                         color={"#283593"}
                         value={values.adminUsername} 
                         name="adminUsername"
                         placeholder="Nome do Administrador"
-                        onChange={handleChange} />
+                        onChange={handleChange}
+                        disabled={loading} />
+                    <FormErrorMessage>{errors.adminUsername}</FormErrorMessage>
                 </FormControl>
-                <FormControl id="adminPassword">
+                <FormControl id="adminPassword" isInvalid={!!errors.adminPassword}>
                     <Input
                         variant={"outline"} 
                         color={"#283593"}
@@ -114,9 +146,11 @@ export function CreateTeamForm() {
                         name="adminPassword"
                         type={"password"}
                         placeholder="Senha do Administrador"
-                        onChange={handleChange} />
+                        onChange={handleChange}
+                        disabled={loading} />
+                    <FormErrorMessage>{errors.adminPassword}</FormErrorMessage>
                 </FormControl>
-                <FormControl id="adminRepeatPassword">
+                <FormControl id="adminRepeatPassword" isInvalid={!!errors.adminRepeatPassword}>
                     <Input
                         variant={"outline"} 
                         color={"#283593"}
@@ -124,11 +158,12 @@ export function CreateTeamForm() {
                         name="adminRepeatPassword"
                         type={"password"}
                         placeholder="Repita a senha do Administrador"
-                        onChange={handleChange} />
+                        onChange={handleChange}
+                        disabled={loading} />
+                    <FormErrorMessage>{errors.adminRepeatPassword}</FormErrorMessage>
                 </FormControl>
 
-                <Button type="submit"> CRIAR O TIME </Button>
-
+                <Button variant={"outline"} type="submit" isLoading={loading}> CRIAR O TIME </Button>
             </Flex>
         </Container>
     )

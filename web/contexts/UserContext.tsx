@@ -6,6 +6,8 @@ import { AUTH_TOKEN_KEY } from "../config/Constants";
 import { signInRequest, verifyUserRequest } from "../functions/requests/UserRequests";
 import { UserSchemaWithTeam } from "../schemas/UserSchema";
 
+import { useLoading } from "./LoadingContext";
+
 const UserContext = createContext({} as {
     user?: UserSchemaWithTeam,
     login: (username: string, password: string) => Promise<{
@@ -21,6 +23,7 @@ const UserProvider: React.FC = ({ children }) => {
         const token = localStorage?.getItem(AUTH_TOKEN_KEY) ?? ""
         return await verifyUserRequest(url, token)
     })
+    const { startLoading, stopLoading } = useLoading()
     const { push, pathname } = useRouter()
 
     useEffect(() => {
@@ -37,6 +40,7 @@ const UserProvider: React.FC = ({ children }) => {
     }, [user, push, pathname])
 
     async function login(username: string, password: string) {
+        startLoading()
         const result = await signInRequest(username, password)
         
         if(!result.success) {
@@ -50,6 +54,7 @@ const UserProvider: React.FC = ({ children }) => {
         
         push('/home')
 
+        stopLoading()
         return { success: true }
     }
 

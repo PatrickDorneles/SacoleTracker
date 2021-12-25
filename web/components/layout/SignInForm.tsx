@@ -2,11 +2,14 @@ import { Button, Flex, FormControl, FormLabel, Input, InputGroup, InputRightElem
 import { useFormik } from "formik";
 import { useState } from "react";
 
+import { useLoading } from "../../contexts/LoadingContext";
 import { useUser } from "../../contexts/UserContext";
 
 export function SignInForm() {
     const toast = useToast()
     const { login } = useUser()
+    const { loading } = useLoading()
+
     const { submitForm, values, handleChange } = useFormik({
         initialValues: {
             username: '',
@@ -53,25 +56,16 @@ export function SignInForm() {
             }}
             >
             <FormControl id="username">
-                <FormLabel
-                    color={"white"}
-                >
-                    Nome de Usuario
-                </FormLabel>
                 <Input
                     variant={"outline"} 
                     color={"white"}
                     value={values.username} 
                     name="username"
                     placeholder="Nome de Usuario"
-                    onChange={handleChange} />
+                    onChange={handleChange}
+                    disabled={loading} />
             </FormControl>
             <FormControl id="password">
-                <FormLabel
-                    color={"white"}
-                >
-                    Senha
-                </FormLabel>
                 <InputGroup>
                     <Input
                         variant={"outline"} 
@@ -80,7 +74,8 @@ export function SignInForm() {
                         value={values.password} 
                         name="password"
                         placeholder="Senha"
-                        onChange={handleChange} />
+                        onChange={handleChange}
+                        disabled={loading} />
                     <InputRightElement width='4.5rem'>
                         <Button
                             h='1.75rem'
@@ -94,7 +89,7 @@ export function SignInForm() {
             <Button 
                 type="submit"
                 marginTop={8}    
-            >Login</Button>
+            >LOGIN</Button>
         </Flex>
     )
 }

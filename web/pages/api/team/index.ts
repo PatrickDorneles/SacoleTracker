@@ -8,6 +8,7 @@ import { createId } from "../../../functions/factories/IdFactory"
 import { CreateTeamSchema } from "../../../schemas/TeamSchema"
 
 import { TeamModel, UserModel } from "./../../../database/models"
+import { validateNewTeam } from "./../../../functions/validation/TeamValidator"
 
 async function createTeam(req: NextApiRequest, res: NextApiResponse) {
 	await connectToDatabase()
@@ -31,6 +32,12 @@ async function createTeam(req: NextApiRequest, res: NextApiResponse) {
 			.send("Nome de usuario do administrador já está em uso!")
 	}
 
+	const validationResult = validateNewTeam(body)
+
+	if (!validationResult.valid) {
+		return res.status(400).send(validationResult.error.message)
+	}
+
 	const createdTeam = await TeamModel.create({
 		_id: createId(),
 		imageUrl: `${IDENTICON_URL}/${body.name}.png`,
@@ -51,6 +58,8 @@ async function createTeam(req: NextApiRequest, res: NextApiResponse) {
 
 async function getAllTeams(req: NextApiRequest, res: NextApiResponse) {
 	// TODO
+
+	res.status(501).end()
 }
 
 export default async function handle(
