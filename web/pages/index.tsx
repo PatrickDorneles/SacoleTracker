@@ -10,7 +10,7 @@ const Home: NextPage = () => {
   return (
     <CoreContainer>
       <Head>
-        <title>SacoleTracker</title>
+        <title>🍦 SacoleTracker 🍦</title>
       </Head>
 
       <Text

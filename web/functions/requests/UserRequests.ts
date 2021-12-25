@@ -1,10 +1,10 @@
-import { UserSchema } from "../../schemas/UserSchema";
+import { UserSchemaWithTeam } from "./../../schemas/UserSchema";
 import { api } from "../../config/Apis";
 import { createRequestResult } from "../factories/RequestResultFactory";
 import { RequestResult } from "../../schemas/RequestResultSchema";
 
 export async function verifyUserRequest(url: string, token: string) {
-  const response = await api.get<UserSchema | undefined>(url, {
+  const response = await api.get<UserSchemaWithTeam | undefined>(url, {
     headers: {
       Authorization: token,
     },

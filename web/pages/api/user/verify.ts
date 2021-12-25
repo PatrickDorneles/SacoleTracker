@@ -1,8 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { decode } from "jsonwebtoken";
-import { UserModel } from "./../../../database/models/index";
+import { TeamModel, UserModel } from "./../../../database/models/index";
 import { connectToDatabase } from "../../../database";
-import { createUserSchema } from "../../../functions/factories/schema/UserFactory";
+import {
+  createUserSchema,
+  createUserSchemaWithTeam,
+} from "../../../functions/factories/schema/UserFactory";
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,12 +27,16 @@ export default async function handler(
     return res.json(undefined);
   }
 
-  console.log(payload);
-
   const { id } = payload as { id: string };
   const user = await UserModel.findById(id);
 
-  console.log(user);
+  if (!user) {
+    return res.json(undefined);
+  }
 
-  return res.json(createUserSchema(user!));
+  const team = await TeamModel.findOne({ _id: user.teamId });
+
+  console.log(team);
+
+  return res.json(createUserSchemaWithTeam(user, team!));
 }

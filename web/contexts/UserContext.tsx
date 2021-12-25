@@ -3,10 +3,10 @@ import { createContext, useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 import { AUTH_TOKEN_KEY } from "../config/Constants";
 import { signInRequest, verifyUserRequest } from "../functions/requests/UserRequests";
-import { UserSchema } from "../schemas/UserSchema";
+import { UserSchema, UserSchemaWithTeam } from "../schemas/UserSchema";
 
 const UserContext = createContext({} as {
-    user?: UserSchema,
+    user?: UserSchemaWithTeam,
     login: (username: string, password: string) => Promise<{
         success: boolean,
         error?: string
@@ -16,7 +16,7 @@ const UserContext = createContext({} as {
 
 
 const UserProvider: React.FC = ({ children }) => {
-    const { data: user, mutate } = useSWR<UserSchema | undefined>('/user/verify', async (url) => {
+    const { data: user, mutate } = useSWR<UserSchemaWithTeam | undefined>('/user/verify', async (url) => {
         const token = localStorage?.getItem(AUTH_TOKEN_KEY) ?? ""
         return await verifyUserRequest(url, token)
     })
@@ -41,10 +41,10 @@ const UserProvider: React.FC = ({ children }) => {
         if(!result.success) {
             return result
         }
-    
+        
         const { token } = result.data
 
-        localStorage.setItem('auth', token)
+        localStorage.setItem(AUTH_TOKEN_KEY, token)
         await mutate()
         
         push('/home')

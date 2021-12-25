@@ -12,7 +12,7 @@ export class User {
   password!: string;
 
   @prop({ type: String })
-  imageUrl?: string;
+  avatarUrl?: string;
 
   @prop({ type: Boolean, default: false })
   admin!: boolean;

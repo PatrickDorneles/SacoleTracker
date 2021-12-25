@@ -6,6 +6,7 @@ import { connectToDatabase } from "../../../database";
 import { CreateTeamSchema } from "../../../schemas/TeamSchema";
 import { createId } from "../../../functions/factories/IdFactory";
 import mongoose from "mongoose";
+import { IDENTICON_URL } from "../../../config/Constants";
 
 async function createTeam(req: NextApiRequest, res: NextApiResponse) {
   await connectToDatabase();
@@ -16,30 +17,33 @@ async function createTeam(req: NextApiRequest, res: NextApiResponse) {
   const teamWithSameName = await TeamModel.findOne({ name: body.name });
 
   if (teamWithSameName) {
-    return res.status(400).send("");
+    return res.status(400).send("Nome do time já em uso!");
+  }
+
+  const userWithSameUsernameAsAdmin = await UserModel.findOne({
+    username: admin.username,
+  });
+
+  if (userWithSameUsernameAsAdmin) {
+    return res
+      .status(400)
+      .send("Nome de usuario do administrador já está em uso!");
   }
 
   const createdTeam = await TeamModel.create({
     _id: createId(),
+    imageUrl: `${IDENTICON_URL}/${body.name}.png`,
     name: body.name,
   });
 
-  const createdAdmin = await UserModel.create({
+  await UserModel.create({
     _id: createId(),
     username: admin.username,
     password: await hash(admin.password, SALT_OR_ROUNDS),
+    avatarUrl: `${IDENTICON_URL}/${admin.username}.png`,
     admin: true,
     teamId: createdTeam._id,
   });
-
-  await TeamModel.updateOne(
-    { _id: createdTeam._id },
-    {
-      $set: {
-        users: new mongoose.Types.Array([createdAdmin]),
-      },
-    }
-  );
 
   return res.status(201).send("Time criado com sucesso");
 }
