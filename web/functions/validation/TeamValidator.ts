@@ -1,11 +1,11 @@
-import { TeamSchema, CreateTeamSchema } from "../../schemas/TeamSchema"
+import { TEAM_VALIDATION, USER_VALIDATION } from "../../config/Constants"
+import { NewTeamSchema } from "../../schemas/TeamSchema"
 
-import { TEAM_VALIDATION, USER_VALIDATION } from "./../../config/Constants"
 import { createValidator, getValidator } from "./Validator"
 
 const validator = getValidator()
 
-export const validateNewTeam = createValidator((newTeam: CreateTeamSchema) => {
+export const validateNewTeam = createValidator((newTeam: NewTeamSchema) => {
 	const { admin } = newTeam
 
 	if (

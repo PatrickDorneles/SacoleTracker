@@ -5,7 +5,7 @@ import { IDENTICON_URL } from "../../../config/Constants"
 import { SALT_OR_ROUNDS } from "../../../config/Env"
 import { connectToDatabase } from "../../../database"
 import { createId } from "../../../functions/factories/IdFactory"
-import { CreateTeamSchema } from "../../../schemas/TeamSchema"
+import { NewTeamSchema } from "../../../schemas/TeamSchema"
 
 import { TeamModel, UserModel } from "./../../../database/models"
 import { validateNewTeam } from "./../../../functions/validation/TeamValidator"
@@ -13,10 +13,10 @@ import { validateNewTeam } from "./../../../functions/validation/TeamValidator"
 async function createTeam(req: NextApiRequest, res: NextApiResponse) {
 	await connectToDatabase()
 
-	const body = req.body as CreateTeamSchema
-	const { admin } = body
+	const newTeam = req.body as NewTeamSchema
+	const { admin } = newTeam
 
-	const teamWithSameName = await TeamModel.findOne({ name: body.name })
+	const teamWithSameName = await TeamModel.findOne({ name: newTeam.name })
 
 	if (teamWithSameName) {
 		return res.status(400).send("Nome do time já em uso!")
@@ -32,7 +32,7 @@ async function createTeam(req: NextApiRequest, res: NextApiResponse) {
 			.send("Nome de usuario do administrador já está em uso!")
 	}
 
-	const validationResult = validateNewTeam(body)
+	const validationResult = validateNewTeam(newTeam)
 
 	if (!validationResult.valid) {
 		return res.status(400).send(validationResult.error.message)
@@ -40,8 +40,8 @@ async function createTeam(req: NextApiRequest, res: NextApiResponse) {
 
 	const createdTeam = await TeamModel.create({
 		_id: createId(),
-		imageUrl: `${IDENTICON_URL}/${body.name}.png`,
-		name: body.name
+		imageUrl: `${IDENTICON_URL}/${newTeam.name}.png`,
+		name: newTeam.name
 	})
 
 	await UserModel.create({

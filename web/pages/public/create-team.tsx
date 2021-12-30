@@ -24,9 +24,7 @@ export default function CreateTeamPage() {
                 Criação de Times
             </Text>
 
-
             <CreateTeamForm />
-
 
             <Button
                 leftIcon={<CloseIcon />}

@@ -5,6 +5,7 @@ import { JWTSECRET } from "../../config/Env"
 import { connectToDatabase } from "../../database"
 
 import { UserModel } from "./../../database/models/index"
+import { UserSignIn } from "./../../schemas/UserSchema"
 
 import type { NextApiRequest, NextApiResponse } from "next"
 
@@ -19,15 +20,15 @@ export default async function handler(
 	}
 
 	await connectToDatabase()
-	const body = req.body as { username: string; password: string }
+	const signIn = req.body as UserSignIn
 
-	const user = await UserModel.findOne({ username: body.username })
+	const user = await UserModel.findOne({ username: signIn.username })
 
 	if (!user) {
 		return res.status(401).send("Usuario ou senha invalidos")
 	}
 
-	const doesPasswordsMatch = await compare(body.password, user.password)
+	const doesPasswordsMatch = await compare(signIn.password, user.password)
 
 	if (!doesPasswordsMatch) {
 		return res.status(401).send("Usuario ou senha invalidos")

@@ -1,11 +1,11 @@
-import { CreateTeamSchema, TeamSchema } from "../../../schemas/TeamSchema"
+import { NewTeamSchema, TeamSchema } from "../../../schemas/TeamSchema"
 
 import { Team } from "./../../../database/models/TeamModel"
 
-export function createCreateTeamSchema(
+export function createNewTeamSchema(
 	name: string,
 	admin: { username: string; password: string }
-): CreateTeamSchema {
+): NewTeamSchema {
 	return {
 		name,
 		admin

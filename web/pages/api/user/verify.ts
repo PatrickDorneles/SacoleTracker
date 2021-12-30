@@ -2,9 +2,8 @@ import { decode } from "jsonwebtoken"
 import { NextApiRequest, NextApiResponse } from "next"
 
 import { connectToDatabase } from "../../../database"
+import { TeamModel, UserModel } from "../../../database/models/index"
 import { createUserSchemaWithTeam } from "../../../functions/factories/schema/UserFactory"
-
-import { TeamModel, UserModel } from "./../../../database/models/index"
 
 export default async function handler(
 	req: NextApiRequest,

@@ -1,5 +1,5 @@
-import { v4 as uuid } from "uuid"
+import { randomUUID } from "crypto"
 
 export function createId() {
-	return uuid()
+	return randomUUID()
 }

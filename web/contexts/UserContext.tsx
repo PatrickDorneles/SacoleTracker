@@ -27,14 +27,14 @@ const UserProvider: React.FC = ({ children }) => {
     const { push, pathname } = useRouter()
 
     useEffect(() => {
-        if(!user && pathname !== '/' && !pathname.startsWith('/public')) {
+        if (!user && pathname !== '/' && !pathname.startsWith('/public')) {
             push('/')
         }
     }, [user, push, pathname])
 
 
     useEffect(() => {
-        if(user && !pathname.startsWith('/home')) {
+        if (user && !pathname.startsWith('/home')) {
             push('/home')
         }
     }, [user, push, pathname])
@@ -42,16 +42,17 @@ const UserProvider: React.FC = ({ children }) => {
     async function login(username: string, password: string) {
         startLoading()
         const result = await signInRequest(username, password)
-        
-        if(!result.success) {
+
+        if (!result.success) {
+            stopLoading()
             return result
         }
-        
+
         const { token } = result.data
 
         localStorage.setItem(AUTH_TOKEN_KEY, token)
         await mutate()
-        
+
         push('/home')
 
         stopLoading()
@@ -59,8 +60,7 @@ const UserProvider: React.FC = ({ children }) => {
     }
 
     async function logout() {
-        localStorage.removeItem('auth')
-        push('/')
+        localStorage.removeItem(AUTH_TOKEN_KEY)
         mutate()
     }
 
@@ -72,7 +72,7 @@ const UserProvider: React.FC = ({ children }) => {
         }}>
             {children}
         </UserContext.Provider>
-    )  
+    )
 }
 
 export function useUser() {

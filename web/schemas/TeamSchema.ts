@@ -1,4 +1,4 @@
-export type CreateTeamSchema = {
+export type NewTeamSchema = {
 	name: string
 	admin: {
 		username: string

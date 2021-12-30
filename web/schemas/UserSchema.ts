@@ -4,9 +4,14 @@ export type UserSchema = {
 	_id: string
 	username: string
 	admin: boolean
-	avataUrl?: string
+	avatarUrl?: string
 }
 
 export type UserSchemaWithTeam = UserSchema & {
 	team: TeamSchema
+}
+
+export type UserSignIn = {
+	username: string
+	password: string
 }
