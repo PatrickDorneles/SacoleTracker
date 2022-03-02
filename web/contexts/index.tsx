@@ -7,9 +7,9 @@ export const GlobalContextProvider: React.FC = ({ children }) => {
 
     return (
         <LoadingProvider>
-        <UserProvider>
-                {children}
-        </UserProvider>
+            <UserProvider>
+                    {children}
+            </UserProvider>
         </LoadingProvider>
     )
 }

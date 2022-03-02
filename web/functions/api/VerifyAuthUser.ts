@@ -1,9 +1,12 @@
 import { decode } from "jsonwebtoken"
 import { NextApiRequest } from "next"
 
+import { connectToDatabase } from "../../database"
 import { UserModel } from "../../database/models/index"
 
 export async function verifyAuthUser(req: NextApiRequest) {
+	connectToDatabase()
+	
 	const authorization = req.headers.authorization
 
 	if (!authorization) {

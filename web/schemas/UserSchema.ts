@@ -15,3 +15,10 @@ export type UserSignIn = {
 	username: string
 	password: string
 }
+
+export type UserCreationParams = {
+	username: string
+	password: string
+	admin: boolean
+	avatarUrl?: string
+}
