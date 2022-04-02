@@ -8,6 +8,7 @@ import { createId } from "../../../functions/factories/IdFactory"
 import { NewTeamSchema } from "../../../schemas/TeamSchema"
 
 import { TeamModel, UserModel } from "./../../../database/models"
+import { onlyAllowMethods } from './../../../functions/api/middlewares/AllowedMethodMiddleware';
 import { validateNewTeam } from "./../../../functions/validation/TeamValidator"
 
 async function createTeam(req: NextApiRequest, res: NextApiResponse) {
@@ -66,13 +67,13 @@ export default async function handle(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
+	const allowed = onlyAllowMethods("POST", "GET")(req,res)
+	if(!allowed) return
+
 	switch (req.method) {
 		case "POST":
 			return await createTeam(req, res)
 		case "GET":
 			return await getAllTeams(req, res)
-		default:
-			res.setHeader("Allow", ["POST", "GET"])
-			res.status(405).end(`Method ${req.method} Not Allowed`)
 	}
 }

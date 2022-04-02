@@ -1,17 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { verifyAuthUser } from '../VerifyAuthUser';
+import { verifyAndGetAuthUser } from '../VerifyAndGetAuthUser';
 
-type RouteFunction = (req: NextApiRequest, res: NextApiResponse) => unknown
 
-export const privateRoute = (routeFunction: RouteFunction) => 
-    (req: NextApiRequest, res: NextApiResponse) => {
+export const authenticate = async (req: NextApiRequest, res: NextApiResponse) => {
         
-    const user = verifyAuthUser(req)
+    const result = await verifyAndGetAuthUser(req)
 
-    if(!user) {
-		return res.status(401).send("Usuario não authenticado")
+    if(!result) {
+      res.status(401).send("Usuario não authenticado")
     }
-    
-    return routeFunction(req, res)
+
+    return result
 }

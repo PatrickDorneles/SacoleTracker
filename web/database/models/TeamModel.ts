@@ -14,6 +14,6 @@ export class Team {
 	@prop({ type: mongoose.Types.Array })
 	storage!: mongoose.Types.Array<{
 		productId: string
-		quantity: string
+		quantity: number
 	}>
 }

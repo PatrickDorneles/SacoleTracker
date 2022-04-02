@@ -19,7 +19,7 @@ const UserContext = createContext({} as {
 
 
 const UserProvider: React.FC = ({ children }) => {
-    const { data: user, mutate } = useSWR<UserSchemaWithTeam | undefined>('/user/verify', async (url) => {
+    const { data: user, mutate, isValidating } = useSWR<UserSchemaWithTeam | undefined>('/user/verify', async (url) => {
         const token = localStorage?.getItem(AUTH_TOKEN_KEY) ?? ""
         return await verifyUserRequest(url, token)
     })

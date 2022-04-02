@@ -3,25 +3,27 @@ import { NextApiResponse, NextApiRequest } from "next"
 
 import { SALT_OR_ROUNDS } from "../../../config/Env"
 import { UserModel } from "../../../database/models"
-import { verifyAuthUser } from "../../../functions/api/VerifyAuthUser"
+import { onlyAllowMethods } from "../../../functions/api/middlewares/AllowedMethodMiddleware"
+import { verifyAndGetAuthUser } from "../../../functions/api/VerifyAndGetAuthUser"
 import { createId } from "../../../functions/factories/IdFactory"
 import { UserCreationParams } from "../../../schemas/UserSchema"
 
-import { privateRoute } from './../../../functions/api/middlewares/AuthMiddleware';
+import { IDENTICON_URL } from './../../../config/Constants';
+import { authenticate } from './../../../functions/api/middlewares/AuthMiddleware';
 
 async function handle(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	if (req.method !== "POST") {
-		res.setHeader("Allow", ["POST"])
-		res.status(405).end(`Method ${req.method} Not Allowed`)
-		return
-	}
+	const allowed = onlyAllowMethods("POST")(req,res)
+	if(!allowed) return
 
-	const admin = await verifyAuthUser(req)
+	const auth = await authenticate(req,res)
+	if(!auth) return
 
-	if (!admin?.admin) {
+	const { user } = auth
+
+	if (!user.admin) {
 		return res
 			.status(403)
 			.send("Somente administradores podem criar usuarios")
@@ -36,11 +38,12 @@ async function handle(
 		username: userParams.username,
 		password: hashedPassword,
 		admin: userParams.admin,
-		avatarUrl: userParams.avatarUrl	
+		avatarUrl: userParams.avatarUrl || `${IDENTICON_URL}/${userParams.username}.png`	
 	})
 
 	await newUser.save()
 
+	return res.status(201)
 }
 
-export default privateRoute(handle)
+export default handle
