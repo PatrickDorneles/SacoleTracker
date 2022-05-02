@@ -7,7 +7,16 @@
 		{
 			"name": "🍧📱 Mobile",
 			"path": "mobile"
+		},
+		{
+			"name": "🍨🗃️ Server",
+			"path": "server"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"cSpell.words": [
+			"nestjs",
+			"tailwindcss"
+		]
+	}
 }

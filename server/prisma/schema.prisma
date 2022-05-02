@@ -1,0 +1,155 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Organization {
+  id String @id @default(uuid())
+
+  name        String
+  description String? @db.Text
+  imageUrl    String?
+
+  users User[]
+
+  products       Product[]
+  productStorage ProductStorage[]
+
+  ProductTag ProductTag[]
+  @@map("organizations")
+}
+
+model User {
+  id String @id @default(uuid())
+
+  username String @unique
+  email    String
+  password String
+
+  avatarUrl String?
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  permissions UserPermission[]
+
+  admin Boolean @default(false)
+
+  @@map("users")
+}
+
+enum Action {
+  authenticate
+  create_product
+  create_transaction
+  view_storage
+  view_analytics
+  manage_users
+  manage_admins
+}
+
+model UserPermission {
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  action Action
+
+  @@id([userId, action])
+  @@map("permissions")
+}
+
+model Product {
+  id String @id @default(uuid())
+
+  price          String
+  productionCost String?
+
+  name        String
+  code        String
+  description String @db.Text
+
+  imageUrl String?
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  storage     ProductStorage?
+  transaction ProductTransaction[]
+  ProductTag  ProductTag[]
+
+  @@map("products")
+}
+
+model ProductStorage {
+  product        Product      @relation(fields: [productId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  productId      String       @unique
+
+  storage Int
+
+  @@id([productId])
+  @@map("product-storages")
+}
+
+enum TransactionTypes {
+  selling
+  production
+  waste
+}
+
+enum PaymentMethods {
+  cash
+  mobile_payment
+  debit
+  credit
+}
+
+model ProductTransaction {
+  id String @id @default(uuid())
+
+  type TransactionTypes
+
+  product     Product     @relation(fields: [productId], references: [id])
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+
+  productStorageProductId String?
+  productId               String
+  transactionId           String
+
+  quantity Int
+
+  @@map("storage-transactions")
+}
+
+model Transaction {
+  id String @id @default(uuid())
+
+  description String? @db.Text
+
+  paymentMethod PaymentMethods? @default(cash)
+
+  storageTransactions ProductTransaction[]
+
+  @@map("transactions")
+}
+
+model ProductTag {
+  id String @id @default(uuid())
+
+  name String
+  code String
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  products Product[]
+
+  @@map("product-tags")
+}

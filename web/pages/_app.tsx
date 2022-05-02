@@ -1,18 +1,8 @@
-import { ChakraProvider } from '@chakra-ui/react'
-
-import { GlobalContextProvider } from '../contexts'
-
-import type { AppProps } from 'next/app'
 import '../styles/globals.css'
+import type { AppProps } from 'next/app'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <ChakraProvider>
-      <GlobalContextProvider>
-        <Component {...pageProps} />
-      </GlobalContextProvider>
-    </ChakraProvider>
-  )
+  return <Component {...pageProps} />
 }
 
 export default MyApp
